@@ -4,7 +4,7 @@ export interface Post {
     summary: string;
     content: string;
     isPublished: boolean;
-    createdAt: Date;
-    updatedAt: Date;
-    publishedAt: Date;
+    createdAt: string;
+    updatedAt: string;
+    publishedAt: string;
 }
