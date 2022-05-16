@@ -1,10 +1,11 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import axios from 'axios';
 import { Container, Header, List } from 'semantic-ui-react';
 import { Post } from '../models/post';
 import NavBar from './NavBar';
 import PostDashboard from '../../features/posts/dashboard/PostDashboard';
 import {v4 as uuid} from 'uuid';
+import agent from '../api/agent'
+import LoadingComponent from './LoadingComponent';
 
 
 function App() {
@@ -12,11 +13,14 @@ function App() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [selctedPost, setSelectedPost] = useState<Post | undefined>(undefined);
   const [editMode, setEditMode] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    axios.get<Post[]>('http://localhost:5000/api/Posts').then(response => {
+    agent.Posts.list().then(response => {
       console.log(response);
-      setPosts(response.data);
+      setPosts(response);
+      setLoading(false);
     })
   }, []);
 
@@ -38,20 +42,39 @@ function App() {
   }
 
   function handleCreateOrEditPost(post: Post){
-    post.id ? setPosts([...posts.filter(x => x.id !== post.id), post])
-    : setPosts([...posts, {...post, id: uuid()}]); // jak mamy id to strzelamy podmianke(czyli dajemy wszystkie te ktore nie maja id edytowanego (usuwamy go) i dodajemy edytowany), jak nie to dodajemy do tablicy nowa
 
-    setEditMode(false);
+    setSubmitting(true);
 
-    setSelectedPost(post);
+    if(post.id){
+      agent.Posts.update(post).then(() => {
+        setPosts([...posts.filter(x => x.id !== post.id), post])
+        setSelectedPost(post);
+        setEditMode(false);
+        setSubmitting(false);
+      })
+    } else {
+      post.id = uuid();
+      agent.Posts.create(post).then(() => {
+        setPosts([...posts, post]);
+        setSelectedPost(post);
+        setEditMode(false);
+        setSubmitting(false);
+      })
+    }
   }
 
   function handleDeletePost(id: string){
-    setPosts([...posts.filter(x => x.id !== id)])
+    setSubmitting(true);
+    agent.Posts.delete(id).then(() => {
+      setPosts([...posts.filter(x => x.id !== id)]);
+      setSubmitting(false);
+    })
   }
   function handlePublishPost(post: Post){
     setPosts([...posts.filter(x => x.id !== post.id), post])
   }
+
+  if(loading) return <LoadingComponent content='Ładowanie' />
 
   return (
     <Fragment>
@@ -68,6 +91,7 @@ function App() {
           createOrEdit={handleCreateOrEditPost}
           deletePost={handleDeletePost}
           changePublishStatus={handlePublishPost}
+          submitting={submitting}
         />
       </Container>
       

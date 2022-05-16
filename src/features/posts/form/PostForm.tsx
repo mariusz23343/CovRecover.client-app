@@ -6,9 +6,10 @@ interface Props {
     post: Post | undefined;
     closeForm: () => void;
     createOrEdit: (post:Post) => void;
+    submitting: boolean;
 }
 
-export default function PostForm({post: selectedPost, closeForm, createOrEdit}: Props) {
+export default function PostForm({post: selectedPost, closeForm, createOrEdit, submitting}: Props) {
 
     const timeElapsed = Date.now();
     const today = new Date(timeElapsed);
@@ -42,7 +43,7 @@ export default function PostForm({post: selectedPost, closeForm, createOrEdit}: 
                 <Form.Input placeholder="Tytuł" value={post.title} name='title' onChange={handleInputChange} ></Form.Input>
                 <Form.Input placeholder="Podsumowanie" value={post.summary} name='summary' onChange={handleInputChange}></Form.Input>
                 <Form.TextArea placeholder="Treść Artykułu" value={post.content} name='content' onChange={handleInputChange}></Form.TextArea>
-                <Button type='submit' floated='right'  content='Zapisz Artykuł' />
+                <Button type='submit' loading={submitting} floated='right'  content='Zapisz Artykuł' />
                 <Button onClick={closeForm} floated='right' type='button' content='Wyjdź z trybu edycji' />
             </Form>
         </Segment>
