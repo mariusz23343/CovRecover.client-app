@@ -1,20 +1,29 @@
-import React from "react";
+import { observer } from "mobx-react-lite";
+import React, { useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
 import { Button, Card, Grid } from "semantic-ui-react";
-import { Post } from "../../../app/models/post";
+import LoadingComponent from "../../../app/layout/LoadingComponent";
+import { useStore } from "../../../app/stores/store";
 
-interface Props{
-    post: Post
-    cancelSelectedPost: () => void;
-    openForm: (id: string) => void;
-    changePublishStatus: (post: Post) => void;
-}
 
-export default function PostDetails({post, cancelSelectedPost, openForm, changePublishStatus}: Props){
+
+export default observer(function PostDetails(){
+
+    const {postStore} = useStore();
+    const {selectedPost: post, publishPost, loadPost, loadingInitial} = postStore;
+    const {id} = useParams<{id: string}>()
+
+    useEffect(() => {
+        if(id) loadPost(id);
+    }, [id, loadPost])
+
+    if(loadingInitial || !post) return <LoadingComponent />;
 
     function handlePublish(){
-        post.isPublished = !post.isPublished;
-        changePublishStatus(post);
+        publishPost(post!.id);
     }
+
+   
 
     return (
         <Grid>
@@ -30,12 +39,12 @@ export default function PostDetails({post, cancelSelectedPost, openForm, changeP
             </Card.Content>
             <Card.Content extra>
                 <Button.Group>
-                    <Grid.Column width={2}><Button onClick={() => openForm(post.id)} size='small' basic color='blue' content='Edytuj Artykuł' /></Grid.Column>
+                    <Grid.Column width={2}><Button as={Link} to={`/manage/${post.id}`} size='small' basic color='blue' content='Edytuj Artykuł' /></Grid.Column>
                     <Grid.Column width={2}><Button onClick={handlePublish} basic color='blue' content='Opublikuj Artykuł' /></Grid.Column>
-                    <Grid.Column width={2}><Button onClick={cancelSelectedPost} basic color='blue' content='Anuluj Podgląd' /></Grid.Column>
+                    <Grid.Column width={2}><Button as={Link} to='/posts'  basic color='blue' content='Anuluj Podgląd' /></Grid.Column>
                 </Button.Group>
             </Card.Content>
         </Card>
         </Grid>
     )
-}
+})

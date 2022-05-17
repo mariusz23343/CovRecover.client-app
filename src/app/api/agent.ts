@@ -26,7 +26,7 @@ const requests ={
     post: <T> (url: string, body: {}) => axios.post<T>(url, body).then(responseBody),
     put: <T>(url: string, body: {}) => axios.put<T>(url, body).then(responseBody),
     del: <T> (url: string) => axios.delete(url).then(responseBody),
-    publish: (url: string) => axios.get(url).then(responseBody), //do edycji
+    publish: (url: string) => axios.put(url).then(responseBody), //do edycji
 
 }
 
@@ -35,7 +35,8 @@ const Posts = {
     details: (id: string) => requests.get<Post>(`/posts/${id}`),
     create: (post: Post) => requests.post<void>('/posts', post),
     update: (post: Post) => requests.put<void>(`/posts/${post.id}`, post),
-    delete: (id: string) => requests.del<void>(`/posts/${id}`)
+    delete: (id: string) => requests.del<void>(`/posts/${id}`),
+    publish: (id: string) => requests.publish(`/posts/publish/${id}`)
 }
 
 const agent = {

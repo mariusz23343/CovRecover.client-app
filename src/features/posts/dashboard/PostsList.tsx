@@ -1,15 +1,16 @@
+import { observer } from "mobx-react-lite";
 import React, { SyntheticEvent, useState } from "react";
+import { Link } from "react-router-dom";
 import { Button, Item, Label, Segment } from "semantic-ui-react";
 import { Post } from "../../../app/models/post";
+import { useStore } from "../../../app/stores/store";
 
-interface Props{
-    posts: Post[];
-    selectPost: (id: string) => void;
-    deletePost: (id: string) => void;
-    submitting: boolean;
-}
 
-export default function PostsList({posts, selectPost, deletePost, submitting}: Props){
+
+export default observer(function PostsList(){
+
+    const {postStore} = useStore();
+    const {deletePost, postByDate, loading} = postStore;
 
     const [target, setTarget] = useState('');
     function handlePostDelete(e: SyntheticEvent<HTMLButtonElement>, id: string){
@@ -19,7 +20,7 @@ export default function PostsList({posts, selectPost, deletePost, submitting}: P
     return (
         <Segment>
             <Item.Group divided>
-                {posts.map(post =>(
+                {postByDate.map(post =>(
                     <Item key={post.id}>
                         <Item.Content>
                             <Item.Header as='a'>
@@ -31,8 +32,8 @@ export default function PostsList({posts, selectPost, deletePost, submitting}: P
                                 <div>AUTOR</div>
                             </Item.Description>
                             <Item.Extra>
-                                <Button onClick={() => selectPost(post.id)} floated='right' content="Przeczytaj" color='teal'  />
-                                <Button name={post.id} loading={submitting  && target === post.id} onClick={(e) => handlePostDelete(e, post.id)} floated='right' content="Usuń" color='red'  />
+                                <Button as={Link} to={`/posts/${post.id}`} floated='right' content="Przeczytaj" color='teal'  />
+                                <Button name={post.id} loading={loading && target === post.id} onClick={(e) => handlePostDelete(e, post.id)} floated='right' content="Usuń" color='red'  />
                                 <Label basic content="Kategoria POSTU" />
                             </Item.Extra>
                         </Item.Content>
@@ -41,4 +42,4 @@ export default function PostsList({posts, selectPost, deletePost, submitting}: P
             </Item.Group>
         </Segment>
     )
-}
+})
