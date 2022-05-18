@@ -15,8 +15,18 @@ export default class PostStore{
     }
 
     get postByDate(){
-        return Array.from(this.postRegistry.values()).sort((a,b) => 
+        return Array.from(this.postRegistry.values()).sort((b,a) => 
             Date.parse(a.createdAt) - Date.parse(b.createdAt));
+    }
+
+    get groupedPosts(){
+        return Object.entries(
+            this.postByDate.reduce((posts, post) => {
+                const date = post.createdAt.split('T')[0];
+                posts[date] = posts[date] ? [...posts[date], post] : [post];
+                return posts
+            }, {} as {[key: string]: Post[]})
+        )
     }
 
     loadPosts = async () => {

@@ -1,9 +1,13 @@
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Button, Card, Grid } from "semantic-ui-react";
+import { Button, Card, Grid, GridColumn } from "semantic-ui-react";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import { useStore } from "../../../app/stores/store";
+import PostDetailedChat from "./PostDetailedChat";
+import PostDetailedHeader from "./PostDetailedHeader";
+import PostDetailedInfo from "./PostDetailedInfo";
+import PostDetailedSidebar from "./PostDetailedSidebar";
 
 
 
@@ -27,24 +31,14 @@ export default observer(function PostDetails(){
 
     return (
         <Grid>
-            <Card fluid>
-            <Card.Content>
-                <Card.Header>{post.title}</Card.Header>
-                <Card.Meta>
-                    <span className='date'>{post.publishedAt}</span>
-                </Card.Meta>
-                <Card.Description>
-                    {post.summary}
-                </Card.Description>
-            </Card.Content>
-            <Card.Content extra>
-                <Button.Group>
-                    <Grid.Column width={2}><Button as={Link} to={`/manage/${post.id}`} size='small' basic color='blue' content='Edytuj Artykuł' /></Grid.Column>
-                    <Grid.Column width={2}><Button onClick={handlePublish} basic color='blue' content='Opublikuj Artykuł' /></Grid.Column>
-                    <Grid.Column width={2}><Button as={Link} to='/posts'  basic color='blue' content='Anuluj Podgląd' /></Grid.Column>
-                </Button.Group>
-            </Card.Content>
-        </Card>
+           <Grid.Column width={10}>
+               <PostDetailedHeader post={post} />
+               <PostDetailedInfo post={post}/>
+               <PostDetailedChat />
+           </Grid.Column>
+           <GridColumn width={6}>
+                <PostDetailedSidebar />
+           </GridColumn>
         </Grid>
     )
 })

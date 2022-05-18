@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { Grid } from "semantic-ui-react";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import { useStore } from "../../../app/stores/store";
+import PostFilters from "./PostFilters";
 import PostsList from "./PostsList";
 
 
@@ -12,7 +13,7 @@ export default observer(function PostDashboard() {
     const {loadPosts, postRegistry} = postStore;
 
     useEffect(() => {
-       if(postRegistry.size <= 0) postStore.loadPosts();
+       if(postRegistry.size <= 1) postStore.loadPosts();
     }, [postRegistry.size, loadPosts]);
 
     if(postStore.loadingInitial) return <LoadingComponent content='Ładowanie' />
@@ -23,7 +24,7 @@ export default observer(function PostDashboard() {
                 <PostsList />
             </Grid.Column>
             <Grid.Column width='6'>
-                <h2>Filtry</h2>
+                <PostFilters />
             </Grid.Column>
         </Grid>
     )
