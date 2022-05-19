@@ -1,5 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react'
+import { Link } from 'react-router-dom';
 import {Segment, Grid, Icon, Button} from 'semantic-ui-react'
 import { Post } from '../../../app/models/post';
 
@@ -43,7 +44,7 @@ export default observer(function PostDetailedHeader({post: post}: Props) {
                 </Grid>
             </Segment>
             <Segment clearing attached='bottom'>
-                <Button color='teal'>Edytuj Artykuł</Button>
+                <Button as={Link} to={`/manage/${post.id}`} color='teal'>Edytuj Artykuł</Button>
                 <Button>Opublikuj Artykuł</Button>
                 <Button color='red' floated='right'>
                    Usuń Artykuł

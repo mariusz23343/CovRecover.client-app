@@ -80,6 +80,7 @@ export default class PostStore{
     }
 
     createPost = async (post: Post) => {
+        console.log('111111' + post.isPublished)
         this.loading = true;
         try{
             await agent.Posts.create(post);
