@@ -18,6 +18,7 @@ export default function NavBar(){
                         <Button color='blue' content='Panel Artykułów'/>
                         <Button color='blue' content='Panel Konsultacji' />
                         <Button as={NavLink} to='/createPost'  color='blue' content='Dodaj Artykuł' />
+                        <Button as={NavLink} to='/errors'  color='blue' content='Test Error' />
                     </Button.Group>
                 </Menu.Item>
             </Container>
