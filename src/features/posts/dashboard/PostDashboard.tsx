@@ -16,7 +16,7 @@ export default observer(function PostDashboard() {
        if(postRegistry.size <= 1) postStore.loadPosts();
     }, [postRegistry.size, loadPosts]);
 
-    if(postStore.loadingInitial) return <LoadingComponent content='Ładowanie' />
+    if(postStore.loadingInitial) return <LoadingComponent content='Ładowanie artykułów...'  />
 
     return(
         <Grid>

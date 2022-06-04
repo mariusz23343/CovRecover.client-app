@@ -5,8 +5,8 @@ interface Props {
     errors: any;
 }
 
-export default function ValidationErrors({ errors }: Props) {
-    return (
+export default function ValidationErrors({errors} : Props){
+    return(
         <Message error>
             {errors && (
                 <Message.List>

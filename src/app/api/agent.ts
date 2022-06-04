@@ -2,6 +2,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { config } from "process";
 import { toast } from "react-toastify";
 import { Post } from "../models/post";
+import { User, UserFormValues } from "../models/user";
 import { store } from "../stores/store";
 import { history } from './../../index';
 
@@ -12,6 +13,12 @@ const sleep = (delay: number) => {
 }
 
 axios.defaults.baseURL = 'http://localhost:5000/api';
+
+axios.interceptors.request.use(config => {
+    const token = store.commonStore.token;
+    if(token) config.headers.Authorization = `Bearer ${token}`;
+    return config
+})
 
 axios.interceptors.response.use(async response => {
         await sleep(1000);
@@ -70,8 +77,17 @@ const Posts = {
     publish: (id: string) => requests.publish(`/posts/publish/${id}`)
 }
 
+const Account = {
+    current: () => requests.get<User>('/account'),
+    login: (user: UserFormValues) => requests.post<User>('/account/login', user),
+    register: (user: UserFormValues) => requests.post<User>('/account/register', user) 
+}
+
+
+
 const agent = {
-    Posts
+    Posts, 
+    Account
 }
 
 export default agent;
